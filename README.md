@@ -53,7 +53,6 @@ mediaInfo.dump();
 
 ## TODO
 - [ ] Publish on maven central
-- 
 
 
 ## Acknowledgments
