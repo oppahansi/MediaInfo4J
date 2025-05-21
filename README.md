@@ -1,5 +1,4 @@
 <p align="middle">
-    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/oppahansi/javalings/build.yml">
     <img alt="GitHub" src="https://img.shields.io/github/license/oppahansi/MediaInfo4J">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/oppahansi/MediaInfo4J">
     <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/oppahansi/MediaInfo4J">
@@ -51,6 +50,11 @@ mediaInfo.dump();
 - - `ChapterCount` (Total number of chapters)
 - - `ChapterName x` (ChapterName 1 -> : en:Time for Ignition...)
 - - `ChapterNumber x` (ChapterTimestamp 1 -> 00:00:00.000...)
+
+## TODO
+- [ ] Publish on maven central
+- 
+
 
 ## Acknowledgments
 This project was inspired by and partially derived from the [vlcj-info](https://github.com/caprica/vlcj-info) library.  
