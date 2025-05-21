@@ -1,3 +1,16 @@
+<p align="middle">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/oppahansi/javalings/build.yml">
+    <img alt="GitHub" src="https://img.shields.io/github/license/oppahansi/MediaInfo4J">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/oppahansi/MediaInfo4J">
+    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/oppahansi/MediaInfo4J">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/oppahansi/MediaInfo4J">
+
+</p>
+
+<p align="middle">
+<img alt="GitHub last commit" src="https://img.shields.io/badge/status-in%20development-blue">
+</p>
+
 # MediaInfo4J
 A Java library for parsing media information using the [MediaInfo](https://mediaarea.net/en/MediaInfo) library.  
 This library provides a simple interface to extract metadata from media files.  
