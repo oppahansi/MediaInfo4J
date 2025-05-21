@@ -368,6 +368,13 @@ public final class MediaInfo {
 
     /**
      * Dump media information in a readable format for debugging.
+     */
+    public void dump() {
+        dump(new PrintWriter(System.out));
+    }
+
+    /**
+     * Dump media information in a readable format for debugging.
      *
      * @param writer writer to dump the media information to
      */
@@ -375,7 +382,6 @@ public final class MediaInfo {
         if (writer == null) {
             throw new IllegalArgumentException("Writer cannot be null");
         }
-
 
         try (PrintWriter printer = new PrintWriter(writer)) {
             if (typeToNameToSection.isEmpty()) {

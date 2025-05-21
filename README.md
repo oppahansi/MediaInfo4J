@@ -1,35 +1,44 @@
-# My MediaInfo Parser
-
-A Java library for parsing media information, based on the [vlcj-info](https://github.com/caprica/vlcj-info) library.  
-Currently requires Java 21 and requires https://mediaarea.net/en/MediaInfo to be installed.
+# MediaInfo4J
+A Java library for parsing media information using the [MediaInfo](https://mediaarea.net/en/MediaInfo) library.  
+This library provides a simple interface to extract metadata from media files.  
+Currently requires Java 21 and [MediaInfo](https://mediaarea.net/en/MediaInfo) library to be installed.
 
 ## Example Usage
-
+### From a file path
 ```java
 MediaInfo mediaInfo = MediaInfoParser.parseFile(filePath);
 
 // Print all sections and their fields
-mediaInfo.getSections().forEach((type, section) -> {
-    System.out.println("Section: " + type);
-    section.getFieldValues().forEach((key, value) -> {
-        System.out.printf("  %s: %s%n", key, value);
-    });
-    System.out.println();
-});
+mediaInfo.dump();
 ```
 
-## License
+### From a string
+```java
+MediaInfo mediaInfo = MediaInfoParser.parseData(filePath);
 
-This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
+// Print all sections and their fields
+mediaInfo.dump();
+```
+
+## Features
+- Parsing of media information from files using the MediaInfo native library.
+- Extraction of metadata such as format, duration, codec, chapters, and more from media files.
+- Simple Java API to access sections and fields of parsed media info.
+- Support for reading media info from both file paths and raw data strings.
+- Better parsing, than in vlcj-info:
+- - Support for Chapter fields and values
+- More methods for checking the validity for files:
+- - CRC32
+- - Adler32
+- - MD5
+- - SHA1
+- - SHA256
+- - SHA512
+- New Menu fields for better chapter parsing:
+- - `ChapterCount` (Total number of chapters)
+- - `ChapterName x` (ChapterName 1 -> : en:Time for Ignition...)
+- - `ChapterNumber x` (ChapterTimestamp 1 -> 00:00:00.000...)
 
 ## Acknowledgments
-
-This project is a derivative work of the [vlcj-info](https://github.com/caprica/vlcj-info) library, licensed under the GNU General Public License v3.0. Modifications include:
-- Updated to Java 21 with stream-based parsing.
-- Added `SectionType` enum for type-safe section handling.
-- Improved parsing for `Menu` section chapters and values containing colons.
-- Simplified data model by merging `Sections` into `Section`.
-
-## Source Code
-
-The complete source code, including modifications, is available in this repository.
+This project was inspired by and partially derived from the [vlcj-info](https://github.com/caprica/vlcj-info) library.  
+And therefore code is being made public and released under the same license.

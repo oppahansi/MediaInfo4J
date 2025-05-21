@@ -105,7 +105,6 @@ public final class MediaInfoParser {
                     continue;
                 }
 
-                // Check if the line is a section header
                 if (isSectionHeader(infoLine)) {
                     currentSectionName = infoLine.trim();
                     currentSectionType = SectionType.fromName(currentSectionName);
@@ -113,7 +112,6 @@ public final class MediaInfoParser {
                     continue;
                 }
 
-                // Parse line based on section type
                 if (currentSection != null) {
                     if (currentSectionType.equals(SectionType.MENU)) {
                         if (TIMESTAMP_PATTERN.matcher(infoLine).matches()) {
