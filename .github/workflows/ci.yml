@@ -37,9 +37,8 @@ jobs:
       - name: Install MediaInfoLib (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          curl -L -o mediainfo.zip https://mediaarea.net/download/binary/libmediainfo0/25.04/MediaInfo_DLL_25.04_Windows_i386_WithoutInstaller.zip
+          curl -o mediainfo.zip https://mediaarea.net/download/binary/libmediainfo0/25.04/MediaInfo_DLL_25.04_Windows_i386_WithoutInstaller.zip
           tar -xf mediainfo.zip
-          copy mediainfo/MediaInfo.dll .
           echo "$PWD" >> $GITHUB_PATH
 
       - name: Install MediaInfo (Windows)
