@@ -29,7 +29,7 @@ mediaInfo.dump();
 ### From a string
 ```java
 MediaInfoParser parser = new MediaInfoParser()
-MediaInfo mediaInfo = parser.parseData(filePath);
+MediaInfo mediaInfo = parser.parseData(dataString);
 
 // Print all sections and their fields
 mediaInfo.dump();
