@@ -14,7 +14,6 @@
 # MediaInfo4J
 A Java library for parsing media information using the [MediaInfo](https://mediaarea.net/en/MediaInfo) library.  
 This library provides a simple interface to extract metadata from media files.  
-Currently requires Java 21 and [MediaInfo](https://mediaarea.net/en/MediaInfo) library to be installed.
 
 ## Example Usage
 ### From a file path
