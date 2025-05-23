@@ -26,19 +26,11 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y mediainfo
 
-      - name: Setup MacPorts
-        if: matrix.os == 'macos-latest'
-        uses: melusina-org/setup-macports@v1.1.4
-
       - name: Install MediaInfo (macOS)
         if: matrix.os == 'macos-latest'
-        run: sudo port install mediainfo
+        run: brew install media-info
 
-      - name: Add MediaInfo to path (macOS)
-        if: matrix.os == 'macos-latest'
-        run: echo "/opt/local/bin" >> $GITHUB_PATH
-
-      - name: Verify MediaInfo Installation
+      - name: Verify MediaInfo Installation (MacOS)
         if: matrix.os == 'macos-latest'
         run: |
           if command -v mediainfo >/dev/null 2>&1; then
@@ -60,18 +52,18 @@ jobs:
       - name: Make Gradle Wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle MacOs
+      - name: Build with Gradle (MacOs)
         if: matrix.os == 'macos-latest'
         run: ./gradlew build -Djava.library.path=/opt/local/lib
 
-      - name: Build with Gradle
+      - name: Build with Gradle (Linux and Windows)
         if: matrix.os != 'macos-latest'
         run: ./gradlew build
 
-      - name: Run tests MacOs
+      - name: Run tests (MacOs)
         if: matrix.os == 'macos-latest'
         run: ./gradlew test -Djava.library.path=/opt/local/lib
 
-      - name: Run tests
+      - name: Run tests (Linux and Windows)
         if: matrix.os != 'macos-latest'
         run: ./gradlew test
