@@ -32,13 +32,21 @@ jobs:
 
       - name: Install MediaInfo (macOS)
         if: matrix.os == 'macos-latest'
+        run: sudo port install mediainfo
+
+      - name: Add MediaInfo to path (macOS)
+        if: matrix.os == 'macos-latest'
+        run: echo "/opt/local/bin" >> $GITHUB_PATH
+
+      - name: Verify MediaInfo Installation
+        if: matrix.os == 'macos-latest'
         run: |
-          # Update MacPorts and install mediainfo
-          sudo /opt/local/bin/port selfupdate
-          sudo /opt/local/bin/port install mediainfo
-          
-          # Add MacPorts binary directory to PATH
-          echo "/opt/local/bin" >> $GITHUB_PATH
+          if command -v mediainfo >/dev/null 2>&1; then
+            echo "MediaInfo is installed: $(mediainfo --version)"
+          else
+            echo "Error: MediaInfo is not installed or not found in PATH"
+            exit 1
+          fi
 
       - name: Install MediaInfo (Windows)
         if: matrix.os == 'windows-latest'
