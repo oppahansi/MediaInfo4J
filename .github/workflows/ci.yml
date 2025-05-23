@@ -28,7 +28,7 @@ jobs:
 
       - name: Install MediaInfo (macOS)
         if: matrix.os == 'macos-latest'
-        run: brew install mediainfo
+        run: brew install media-info
 
       - name: Install MediaInfo (Windows)
         if: matrix.os == 'windows-latest'
