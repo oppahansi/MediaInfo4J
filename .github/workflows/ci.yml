@@ -63,5 +63,10 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Run tests MacOs
+        if: matrix.os == 'macos-latest'
+        run: ./gradlew test -Djava.library.path=/opt/local/lib
+
       - name: Run tests
+        if: matrix.os != 'macos-latest'
         run: ./gradlew test
