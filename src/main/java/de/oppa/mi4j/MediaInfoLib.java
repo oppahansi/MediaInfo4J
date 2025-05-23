@@ -42,10 +42,7 @@ public interface MediaInfoLib extends Library {
      * This instance is used to call the native methods defined in this interface.
      * </p>
      */
-    MediaInfoLib INSTANCE = Native.load(
-        Platform.isWindows() ? "MediaInfo" : (Platform.isMac() ? "media-info" : "mediainfo"),
-        MediaInfoLib.class
-    );
+    MediaInfoLib INSTANCE = Native.load(Platform.isWindows() ? "MediaInfo" : "mediainfo", MediaInfoLib.class);
 
     /**
      * Creates a new MediaInfo handle.
