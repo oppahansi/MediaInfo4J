@@ -1,4 +1,5 @@
 <p align="middle">
+    <img alt="GitHub build" src="https://github.com/oppahansi/MediaInfo4J/actions/workflows/ci.yml/badge.svg">
     <img alt="GitHub" src="https://img.shields.io/github/license/oppahansi/MediaInfo4J">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/oppahansi/MediaInfo4J">
     <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/oppahansi/MediaInfo4J">
