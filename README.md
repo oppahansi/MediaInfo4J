@@ -19,7 +19,8 @@ Currently requires Java 21 and [MediaInfo](https://mediaarea.net/en/MediaInfo) l
 ## Example Usage
 ### From a file path
 ```java
-MediaInfo mediaInfo = MediaInfoParser.parseFile(filePath);
+MediaInfoParser parser = new MediaInfoParser()
+MediaInfo mediaInfo = parser.parseFile(filePath);
 
 // Print all sections and their fields
 mediaInfo.dump();
@@ -27,7 +28,8 @@ mediaInfo.dump();
 
 ### From a string
 ```java
-MediaInfo mediaInfo = MediaInfoParser.parseData(filePath);
+MediaInfoParser parser = new MediaInfoParser()
+MediaInfo mediaInfo = parser.parseData(filePath);
 
 // Print all sections and their fields
 mediaInfo.dump();
