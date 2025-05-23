@@ -22,6 +22,18 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Install MediaInfo (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y libmediainfo0v5
+
+      - name: Install MediaInfo (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install mediainfo
+
+      - name: Install MediaInfo (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install mediainfo
+
       - name: Make Gradle Wrapper executable
         run: chmod +x ./gradlew
 
