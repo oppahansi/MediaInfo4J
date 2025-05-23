@@ -6,6 +6,8 @@ import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
+import java.io.IOException;
+
 /*
  * Copyright (C) 2025 oppahansi
  * Copyright 2015-2021 Caprica Software Limited.
@@ -37,12 +39,28 @@ import com.sun.jna.WString;
  */
 public interface MediaInfoLib extends Library {
     /**
-     * The singleton instance of the MediaInfoLib interface.
+     * Loads the MediaInfo library.
      * <p>
-     * This instance is used to call the native methods defined in this interface.
+     * This method loads the MediaInfo library using JNA. It is called automatically
+     * when the class is loaded.
      * </p>
+     *
+     * @return An instance of the MediaInfoLib interface.
      */
-    MediaInfoLib INSTANCE = Native.load(Platform.isWindows() ? "MediaInfo" : "mediainfo", MediaInfoLib.class);
+    static MediaInfoLib getInstance() {
+        try {
+            NativeLibraryLoader.loadMediaInfoLibrary();
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load MediaInfo library", e);
+        }
+
+        MediaInfoLib instance = Native.load(Platform.isWindows() ? "MediaInfo" : "mediainfo", MediaInfoLib.class);
+        if (instance == null) {
+            throw new IllegalStateException("Failed to load MediaInfo library");
+        }
+
+        return instance;
+    }
 
     /**
      * Creates a new MediaInfo handle.

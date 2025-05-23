@@ -22,48 +22,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Install MediaInfo (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y mediainfo
-
-      - name: Install MediaInfo (macOS)
-        if: matrix.os == 'macos-latest'
-        run: brew install media-info
-
-      - name: Verify MediaInfo Installation (MacOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          if command -v mediainfo >/dev/null 2>&1; then
-            echo "MediaInfo is installed: $(mediainfo --version)"
-          else
-            echo "Error: MediaInfo is not installed or not found in PATH"
-            exit 1
-          fi
-
-      - name: Install MediaInfo (Windows)
-        if: matrix.os == 'windows-latest'
-        run: choco install mediainfo
-
-      - name: Add MediaInfo to PATH (Windows)
-        if: matrix.os == 'windows-latest'
-        run: echo 'C:\Program Files\MediaInfo' | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        shell: pwsh
-
       - name: Make Gradle Wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (MacOs)
-        if: matrix.os == 'macos-latest'
-        run: ./gradlew build -Djava.library.path=/opt/local/lib
-
-      - name: Build with Gradle (Linux and Windows)
-        if: matrix.os != 'macos-latest'
+      - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Run tests (MacOs)
-        if: matrix.os == 'macos-latest'
-        run: ./gradlew test -Djava.library.path=/opt/local/lib
-
-      - name: Run tests (Linux and Windows)
-        if: matrix.os != 'macos-latest'
+      - name: Run tests with Gradle
         run: ./gradlew test

@@ -54,7 +54,7 @@ public final class MediaInfoParser {
             throw new MediaInfoParseException("Unsupported file type: %s".formatted(filePath));
         }
 
-        MediaInfoLib mediaInfoLib = MediaInfoLib.INSTANCE;
+        MediaInfoLib mediaInfoLib = MediaInfoLib.getInstance();
         Pointer handle = mediaInfoLib.MediaInfo_New();
         if (handle == null) {
             throw new MediaInfoParseException("Failed to initialize MediaInfo handle");
