@@ -94,11 +94,11 @@ public final class Section implements Iterable<String> {
     }
 
     /**
-     * Get the number of field-value pairs in this section.
+     * Get the list of values in this section.
      *
-     * @return the number of field-value pairs
+     * @return the list of values
      */
-    public List<String> getFieldValuesSet() {
+    public List<String> getValues() {
         return fieldToValue.values().stream().toList();
     }
 
