@@ -24,7 +24,7 @@ jobs:
 
       - name: Install MediaInfo (Linux)
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y libmediainfo0v5
+        run: sudo apt-get update && sudo apt-get install -y mediainfo
 
       - name: Install MediaInfo (macOS)
         if: matrix.os == 'macos-latest'
