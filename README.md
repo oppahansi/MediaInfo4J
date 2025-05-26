@@ -51,7 +51,7 @@ mediaInfo.dump();
 - New Menu fields for better chapter parsing:
 - - `ChapterCount` (Total number of chapters)
 - - `ChapterName x` (ChapterName 1 -> : en:Time for Ignition...)
-- - `ChapterNumber x` (ChapterTimestamp 1 -> 00:00:00.000...)
+- - `ChapterTimestamp x` (ChapterTimestamp 1 -> 00:00:00.000...)
 
 ## TODO
 - [ ] Publish on maven central
