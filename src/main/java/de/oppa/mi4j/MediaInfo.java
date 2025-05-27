@@ -54,46 +54,9 @@ import java.util.zip.Checksum;
 public final class MediaInfo {
     private static final String HEX_08X_STRING_TEMPLATE = "%08X";
     private static final String HEX_02X_STRING_TEMPLATE = "%02X";
+    private static final String FIELD_COMPLETE_NAME = "Complete name";
     private static final Pattern HEX_PATTERN = Pattern.compile("^[0-9a-fA-F]+$");
-    /**
-     * Supported file extensions for media files.
-     * <p>
-     * This set contains the file extensions that are recognized as valid media file types.
-     * Source:
-     * <a href="https://mediaarea.net/en/MediaInfo/Support/Formats">https://mediaarea.net/en/MediaInfo/Support/Formats</a>
-     * </p>
-     */
-    private static final Set<String> SUPPORTED_EXTENSIONS = Set.of(
-        "mkv", "mka", "mks", // Matroska
-        "ogg", "ogm", // Ogg
-        "avi", "wav", // Riff
-        "mpeg", "mpg", "vob", // Mpeg 1&2 container
-        "mp4", // Mpeg 4 container
-        "mpgv", "mpv", "m1v", "m2v", // Mpeg video specific
-        "mp2", "mp3", // Mpeg audio specific
-        "asf", "wma", "wmv", // Windows Media
-        "qt", "mov", // Quicktime
-        "rm", "rmvb", "ra", // Real
-        "ifo", // DVD-Video
-        "ac3", // AC3
-        "dts", // DTS
-        "aac", // AAC
-        "ape", "mac", // Monkey's Audio
-        "flac", // Flac
-        "dat", // CDXA, like Video-CD
-        "aiff", "aifc", // Apple/SGI
-        "au", // Sun/NeXT
-        "iff", // Amiga IFF/SVX8/SV16
-        "paf", // Ensoniq PARIS
-        "sd2", // Sound Designer 2
-        "irca", // Berkeley/IRCAM/CARL
-        "w64", // SoundFoundry WAVE 64
-        "mat", // Matlab
-        "pvf", // Portable Voice format
-        "xi", // FastTracker2 Extended
-        "sds", // Midi Sample dump Format
-        "avr" // Audio Visual Research
-    );
+
     /**
      * Map to hold sections of media information. Grouped by type and name.
      * <p>
@@ -112,17 +75,17 @@ public final class MediaInfo {
      */
     public static boolean isSupportedFileType(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
-            throw new IllegalArgumentException("File path cannot be null or empty");
+            throw new MediaInfoException("File path cannot be null or empty");
         }
 
         // Extract the extension (last part after the last dot)
         int lastDotIndex = filePath.lastIndexOf('.');
         if (lastDotIndex == -1 || lastDotIndex == filePath.length() - 1) {
-            throw new IllegalArgumentException("File path does not contain a valid extension. File path: %s".formatted(filePath));
+            throw new MediaInfoException("File path does not contain a valid extension. File path: %s".formatted(filePath));
         }
 
         String extension = filePath.substring(lastDotIndex + 1).toLowerCase();
-        return SUPPORTED_EXTENSIONS.contains(extension);
+        return MediaInfoLib.SUPPORTED_EXTENSIONS.contains(extension);
     }
 
     /**
@@ -137,7 +100,7 @@ public final class MediaInfo {
 
         return typeToNameToSection
             .computeIfAbsent(type, k -> new LinkedHashMap<>())
-            .computeIfAbsent(sectionName, k -> new Section());
+            .computeIfAbsent(sectionName, k -> new Section(sectionName));
     }
 
     /**
@@ -284,7 +247,7 @@ public final class MediaInfo {
 
         return typeToNameToSection
             .getOrDefault(type, Collections.emptyMap())
-            .getOrDefault(sectionName, new Section())
+            .getOrDefault(sectionName, new Section(sectionName))
             .hasField(fieldName);
     }
 
@@ -334,7 +297,7 @@ public final class MediaInfo {
 
         return typeToNameToSection
             .getOrDefault(type, Collections.emptyMap())
-            .getOrDefault(sectionName, new Section())
+            .getOrDefault(sectionName, new Section(sectionName))
             .getFieldNames();
     }
 
@@ -367,20 +330,94 @@ public final class MediaInfo {
     }
 
     /**
-     * Dump media information in a readable format for debugging.
+     * Print the media information to the console.
+     * <p>
+     * This method prints the media information in a human-readable format.
+     * </p>
      */
-    public void dump() {
-        dump(new PrintWriter(System.out));
+    public void print() {
+        print(new PrintWriter(System.out), null, null, true);
     }
 
     /**
-     * Dump media information in a readable format for debugging.
+     * Print the media information to the console with an option for full format.
      *
-     * @param writer writer to dump the media information to
+     * @param fullFormat if true, prints all fields in full format; otherwise, prints summary
      */
-    public void dump(Writer writer) {
+    public void print(boolean fullFormat) {
+        print(new PrintWriter(System.out), null, null, fullFormat);
+    }
+
+    /**
+     * Print the media information to a specified writer.
+     * <p>
+     * This method prints the media information in a human-readable format to the provided writer.
+     * </p>
+     *
+     * @param writer the writer to print to
+     */
+    public void print(Writer writer) {
+        print(writer, null, null, true);
+    }
+
+    /**
+     * Print the media information to a specified writer with an option for full format.
+     *
+     * @param writer     the writer to print to
+     * @param fullFormat if true, prints all fields in full format; otherwise, prints summary
+     */
+    public void print(Writer writer, boolean fullFormat) {
+        print(writer, null, null, fullFormat);
+    }
+
+    /**
+     * Print the media information for a specific section type.
+     *
+     * @param sectionType the section type to print
+     */
+    public void print(SectionType sectionType) {
+        print(new PrintWriter(System.out), sectionType, null, true);
+    }
+
+    /**
+     * Print the media information for a specific section type with an option for full format.
+     *
+     * @param sectionType the section type to print
+     * @param fullFormat  if true, prints all fields in full format; otherwise, prints summary
+     */
+    public void print(SectionType sectionType, boolean fullFormat) {
+        print(new PrintWriter(System.out), sectionType, null, fullFormat);
+    }
+
+    /**
+     * Print the media information for a specific section name.
+     *
+     * @param sectionName the section name to print
+     */
+    public void print(String sectionName) {
+        print(new PrintWriter(System.out), null, sectionName, true);
+    }
+
+    /**
+     * Print the media information for a specific section name with an option for full format.
+     *
+     * @param sectionName the section name to print
+     * @param fullFormat  if true, prints all fields in full format; otherwise, prints summary
+     */
+    public void print(String sectionName, boolean fullFormat) {
+        print(new PrintWriter(System.out), null, sectionName, fullFormat);
+    }
+
+    /**
+     * Print the media information for a specific section type or name.
+     *
+     * @param sectionType the section type to print, or null to print all sections
+     * @param sectionName the section name to print, or null to print all sections
+     * @param fullFormat  if true, prints all fields in full format; otherwise, prints summary
+     */
+    public void print(Writer writer, SectionType sectionType, String sectionName, boolean fullFormat) {
         if (writer == null) {
-            throw new IllegalArgumentException("Writer cannot be null");
+            throw new MediaInfoException("Writer cannot be null");
         }
 
         try (PrintWriter printer = new PrintWriter(writer)) {
@@ -388,30 +425,47 @@ public final class MediaInfo {
                 printer.println("No sections available.");
                 return;
             }
-            for (Map.Entry<SectionType, Map<String, Section>> entry : typeToNameToSection.entrySet()) {
-                if (entry.getValue().isEmpty()) {
-                    printer.printf("Section Type: %s%n", entry.getKey().getName());
-                    printer.println("  No sections available.");
-                    continue;
-                }
-
-                SectionType sectionType = entry.getKey();
-                Map<String, Section> sections = entry.getValue();
-
-                printer.printf("Section Type: %s%n", sectionType.getName());
-                for (Map.Entry<String, Section> sectionEntry : sections.entrySet()) {
-                    String sectionName = sectionEntry.getKey();
-                    Section section = sectionEntry.getValue();
-
-                    printer.printf("  Section Name: %s%n", sectionName);
-                    for (String field : section) {
-                        String value = section.getFieldValue(field);
-                        printer.printf("    %35s -> %s%n", field, value);
+            if (sectionType != null) {
+                printSections(printer, Map.of(sectionType, typeToNameToSection.getOrDefault(sectionType, Collections.emptyMap())), fullFormat);
+            } else if (sectionName != null) {
+                for (Map.Entry<SectionType, Map<String, Section>> entry : typeToNameToSection.entrySet()) {
+                    if (entry.getValue().containsKey(sectionName)) {
+                        printSections(printer, Map.of(entry.getKey(), Map.of(sectionName, entry.getValue().get(sectionName))), fullFormat);
+                        return;
                     }
                 }
-
-                printer.println();
+                printer.printf("Section with name '%s' not found.%n", sectionName);
+            } else {
+                printSections(printer, typeToNameToSection, fullFormat);
             }
+        }
+    }
+
+    /**
+     * Print the sections in a human-readable format.
+     *
+     * @param printer    the PrintWriter to print to
+     * @param sections   the sections to print
+     * @param fullFormat if true, prints all fields in full format; otherwise, prints summary
+     */
+    private void printSections(PrintWriter printer, Map<SectionType, Map<String, Section>> sections, boolean fullFormat) {
+        for (Map.Entry<SectionType, Map<String, Section>> entry : sections.entrySet()) {
+            SectionType sectionType = entry.getKey();
+            Map<String, Section> sectionMap = entry.getValue();
+            if (sectionMap.isEmpty()) {
+                printer.printf("Section Type: %s%n  No sections available.%n", sectionType.getName());
+                continue;
+            }
+
+            printer.printf("Section Type: %s%n", sectionType.getName());
+            for (Section section : sectionMap.values()) {
+                section.print(printer);
+                if (!fullFormat) {
+                    printer.printf("    Fields: %d%n%n", section.getFieldNames().size());
+                }
+            }
+
+            printer.println();
         }
     }
 
@@ -437,7 +491,7 @@ public final class MediaInfo {
      */
     public String calculateChecksum(ChecksumAlgorithm algorithm) {
         if (algorithm == null) {
-            throw new IllegalArgumentException("Algorithm cannot be null");
+            throw new MediaInfoException("Algorithm cannot be null");
         }
 
         if (algorithm.equals(ChecksumAlgorithm.CRC32)) {
@@ -450,12 +504,12 @@ public final class MediaInfo {
         try {
             digest = MessageDigest.getInstance(algorithm.getName());
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Algorithm not supported: " + algorithm, e);
+            throw new MediaInfoException("Algorithm not supported: " + algorithm, e);
         }
 
 
         Section general = getSection(SectionType.GENERAL, SectionType.GENERAL.getName());
-        File file = new File(general.getFieldValue("Complete name"));
+        File file = new File(general.getFieldValue(FIELD_COMPLETE_NAME));
 
         validateMediaFile(file);
         digestFileForMessageDigest(file, digest);
@@ -497,7 +551,7 @@ public final class MediaInfo {
      */
     private long calculateCrc32() {
         Section general = getSection(SectionType.GENERAL, SectionType.GENERAL.getName());
-        File file = new File(general.getFieldValue("Complete name"));
+        File file = new File(general.getFieldValue(FIELD_COMPLETE_NAME));
 
         validateMediaFile(file);
 
@@ -515,7 +569,7 @@ public final class MediaInfo {
      */
     private long calculateAdler32() {
         Section general = getSection(SectionType.GENERAL, SectionType.GENERAL.getName());
-        File file = new File(general.getFieldValue("Complete name"));
+        File file = new File(general.getFieldValue(FIELD_COMPLETE_NAME));
 
         validateMediaFile(file);
 
@@ -540,7 +594,8 @@ public final class MediaInfo {
                 digest.update(buffer, 0, bytesRead);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MediaInfoException("Failed to read file for digest: %s".formatted(file.getAbsolutePath()), e);
+
         }
     }
 
@@ -558,7 +613,7 @@ public final class MediaInfo {
                 checksum.update(buffer, 0, bytesRead);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MediaInfoException("Failed to read file for checksum: %s".formatted(file.getAbsolutePath()), e);
         }
     }
 
@@ -574,7 +629,7 @@ public final class MediaInfo {
 
         // Validate hex format
         if (!HEX_PATTERN.matcher(normalized).matches()) {
-            throw new IllegalArgumentException("Invalid hexadecimal checksum: " + checksum);
+            throw new MediaInfoException("Invalid hexadecimal checksum: " + checksum);
         }
 
         List<ChecksumAlgorithm> candidates = new ArrayList<>();
@@ -596,35 +651,35 @@ public final class MediaInfo {
                 candidates.add(ChecksumAlgorithm.SHA512);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown checksum length: " + normalized.length());
+                throw new MediaInfoException("Unknown checksum length: " + normalized.length());
         }
         return candidates;
     }
 
     private void validateSectionType(SectionType type) {
         if (type == null) {
-            throw new IllegalArgumentException("Section type cannot be null");
+            throw new MediaInfoException("Section type cannot be null");
         }
     }
 
     private void validateSectionName(String sectionName) {
         if (sectionName == null || sectionName.isEmpty()) {
-            throw new IllegalArgumentException("Section name cannot be null or empty");
+            throw new MediaInfoException("Section name cannot be null or empty");
         }
     }
 
     private void validateMediaFile(File file) {
         if (file == null) {
-            throw new IllegalArgumentException("File cannot be null");
+            throw new MediaInfoException("File cannot be null");
         }
         if (!file.exists()) {
-            throw new IllegalArgumentException("File does not exist: %s".formatted(file.getAbsolutePath()));
+            throw new MediaInfoException("File does not exist: %s".formatted(file.getAbsolutePath()));
         }
         if (!file.isFile()) {
-            throw new IllegalArgumentException("Path is not a file: %s".formatted(file.getAbsolutePath()));
+            throw new MediaInfoException("Path is not a file: %s".formatted(file.getAbsolutePath()));
         }
         if (!file.canRead()) {
-            throw new IllegalArgumentException("File cannot be read: %s".formatted(file.getAbsolutePath()));
+            throw new MediaInfoException("File cannot be read: %s".formatted(file.getAbsolutePath()));
         }
     }
 

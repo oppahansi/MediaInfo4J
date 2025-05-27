@@ -37,6 +37,7 @@ import java.util.TreeMap;
  * </p>
  */
 public final class Section implements Iterable<String> {
+
     /**
      * Map to hold field-value pairs.
      * <p>
@@ -44,6 +45,27 @@ public final class Section implements Iterable<String> {
      * </p>
      */
     private final Map<String, String> fieldToValue = new TreeMap<>();
+
+    /**
+     * Name of the section.
+     * <p>
+     * This is used to identify the section in the MediaInfo output.
+     * </p>
+     */
+    private String name;
+
+    public Section() {
+        // Default constructor
+    }
+
+    /**
+     * Constructor to create a section with a specific name.
+     *
+     * @param name the name of the section
+     */
+    public Section(String name) {
+        this.name = name;
+    }
 
     /**
      * Add a field-value pair to this section.
@@ -100,6 +122,38 @@ public final class Section implements Iterable<String> {
      */
     public List<String> getValues() {
         return fieldToValue.values().stream().toList();
+    }
+
+    /**
+     * Get the name of this section.
+     *
+     * @return the section name
+     */
+    public String getName() {
+        return name;
+    }
+
+
+    /**
+     * Print the section name and all field-value pairs.
+     *
+     * @param printer the PrintWriter to use for output
+     */
+    public void print(java.io.PrintWriter printer) {
+        printer.printf("Section: %s%n", name != null ? name : "(unnamed)");
+        printFields(printer);
+        printer.println();
+    }
+
+    /**
+     * Print all field-value pairs in this section.
+     *
+     * @param printer the PrintWriter to use for output
+     */
+    public void printFields(java.io.PrintWriter printer) {
+        for (Map.Entry<String, String> entry : fieldToValue.entrySet()) {
+            printer.printf("    %35s -> %s%n", entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -79,7 +80,7 @@ public class MediaInfoParserTest {
     @Test
     @DisplayName("Test should fail parsing a null file")
     void parseFileNullFile() {
-        assertThrows(IllegalArgumentException.class, () -> parser.parseFile(null));
+        assertThrows(MediaInfoException.class, () -> parser.parseFile(null));
     }
 
     @Test
@@ -161,16 +162,16 @@ public class MediaInfoParserTest {
 
         assertTrue(MediaInfo.isSupportedFileType("test.mp4"));
         assertFalse(MediaInfo.isSupportedFileType("test.txt"));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType(null));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType(""));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType("test"));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType(null));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType(""));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType("test"));
 
         Section audio = info.getOrCreateSection(SectionType.AUDIO, "Audio #1");
         assertNotNull(audio);
         assertEquals("DTS", audio.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(SectionType.GENERAL, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(SectionType.GENERAL, ""));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(SectionType.GENERAL, null));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(SectionType.GENERAL, ""));
 
         Map<SectionType, Map<String, Section>> sections = info.getSections();
         assertNotNull(sections);
@@ -191,54 +192,54 @@ public class MediaInfoParserTest {
         Set<String> sectionNamesByType = info.getSectionNames(SectionType.AUDIO);
         assertNotNull(sectionNamesByType);
         assertEquals(2, sectionNamesByType.size());
-        assertThrows(IllegalArgumentException.class, () -> info.getSections(null));
+        assertThrows(MediaInfoException.class, () -> info.getSections(null));
 
         Section sectionByTypeName = info.getSection(SectionType.AUDIO, "Audio #1");
         assertNotNull(sectionByTypeName);
         assertEquals("DTS", sectionByTypeName.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(SectionType.GENERAL, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(SectionType.GENERAL, ""));
+        assertThrows(MediaInfoException.class, () -> info.getSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(SectionType.GENERAL, null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(SectionType.GENERAL, ""));
 
         Section secionByName = info.getSection("Audio #1");
         assertNotNull(secionByName);
         assertEquals("DTS", secionByName.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(""));
+        assertThrows(MediaInfoException.class, () -> info.getSection(null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(""));
 
         assertTrue(info.hasSection("Audio #1"));
         assertFalse(info.hasSection("test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection((String) null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(""));
+        assertThrows(MediaInfoException.class, () -> info.hasSection((String) null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(""));
 
         assertTrue(info.hasSection(SectionType.AUDIO));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection((SectionType) null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection((SectionType) null));
 
         assertTrue(info.hasSection(SectionType.AUDIO, "Audio #1"));
         assertFalse(info.hasSection(SectionType.AUDIO, "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(SectionType.AUDIO, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(SectionType.AUDIO, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(SectionType.AUDIO, null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(SectionType.AUDIO, ""));
 
         assertTrue(info.hasFieldName(SectionType.AUDIO, "Audio #1", "Format"));
         assertFalse(info.hasFieldName(SectionType.AUDIO, "Audio #1", "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, null, ""));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, "", null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, "", ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, null, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, "", null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, "", ""));
 
         assertTrue(info.hasFieldName("Audio #1", "Format"));
         assertFalse(info.hasFieldName("Audio #1", "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, ""));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName("", null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName("", ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName("", null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName("", ""));
 
         assertTrue(info.hasFieldName("Format"));
         assertFalse(info.hasFieldName("test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(""));
 
         Set<String> fieldNames = info.getFieldNames();
         assertNotNull(fieldNames);
@@ -249,18 +250,18 @@ public class MediaInfoParserTest {
         assertNotNull(fieldNames);
         assertFalse(fieldNames.isEmpty());
         assertTrue(fieldNames.contains("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getFieldNames(null));
+        assertThrows(MediaInfoException.class, () -> info.getFieldNames(null));
 
         fieldNames = info.getFieldNames(SectionType.AUDIO, "Audio #1");
         assertNotNull(fieldNames);
         assertFalse(fieldNames.isEmpty());
         assertTrue(fieldNames.contains("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getFieldNames(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getFieldNames(SectionType.AUDIO, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getFieldNames(SectionType.AUDIO, ""));
+        assertThrows(MediaInfoException.class, () -> info.getFieldNames(null, null));
+        assertThrows(MediaInfoException.class, () -> info.getFieldNames(SectionType.AUDIO, null));
+        assertThrows(MediaInfoException.class, () -> info.getFieldNames(SectionType.AUDIO, ""));
 
-        assertThrows(IllegalArgumentException.class, () -> info.dump(null));
-        assertDoesNotThrow(() -> info.dump(new OutputStreamWriter(System.out)));
+        assertThrows(MediaInfoException.class, () -> info.print((Writer) null));
+        assertDoesNotThrow(() -> info.print(new OutputStreamWriter(System.out)));
     }
 
     @Test
@@ -280,9 +281,9 @@ public class MediaInfoParserTest {
     void testIsSupportedFileType() {
         assertTrue(MediaInfo.isSupportedFileType("test.mp4"));
         assertFalse(MediaInfo.isSupportedFileType("test.txt"));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType(null));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType(""));
-        assertThrows(IllegalArgumentException.class, () -> MediaInfo.isSupportedFileType("test"));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType(null));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType(""));
+        assertThrows(MediaInfoException.class, () -> MediaInfo.isSupportedFileType("test"));
     }
 
     @Test
@@ -292,9 +293,9 @@ public class MediaInfoParserTest {
         Section audio = info.getOrCreateSection(SectionType.AUDIO, "Audio #1");
         assertNotNull(audio);
         assertEquals("DTS", audio.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(SectionType.GENERAL, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getOrCreateSection(SectionType.GENERAL, ""));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(SectionType.GENERAL, null));
+        assertThrows(MediaInfoException.class, () -> info.getOrCreateSection(SectionType.GENERAL, ""));
     }
 
     @Test
@@ -308,7 +309,7 @@ public class MediaInfoParserTest {
         Map<String, Section> sectionsByType = info.getSections(SectionType.AUDIO);
         assertNotNull(sectionsByType);
         assertEquals(2, sectionsByType.size());
-        assertThrows(IllegalArgumentException.class, () -> info.getSections(null));
+        assertThrows(MediaInfoException.class, () -> info.getSections(null));
     }
 
     @Test
@@ -335,15 +336,15 @@ public class MediaInfoParserTest {
         Section sectionByTypeName = info.getSection(SectionType.AUDIO, "Audio #1");
         assertNotNull(sectionByTypeName);
         assertEquals("DTS", sectionByTypeName.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(SectionType.GENERAL, null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(SectionType.GENERAL, ""));
+        assertThrows(MediaInfoException.class, () -> info.getSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(SectionType.GENERAL, null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(SectionType.GENERAL, ""));
 
         Section sectionByName = info.getSection("Audio #1");
         assertNotNull(sectionByName);
         assertEquals("DTS", sectionByName.getFieldValue("Format"));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(null));
-        assertThrows(IllegalArgumentException.class, () -> info.getSection(""));
+        assertThrows(MediaInfoException.class, () -> info.getSection(null));
+        assertThrows(MediaInfoException.class, () -> info.getSection(""));
     }
 
     @Test
@@ -352,17 +353,17 @@ public class MediaInfoParserTest {
         MediaInfo info = getMediaInfoFromText();
         assertTrue(info.hasSection("Audio #1"));
         assertFalse(info.hasSection("test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection((String) null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(""));
+        assertThrows(MediaInfoException.class, () -> info.hasSection((String) null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(""));
 
         assertTrue(info.hasSection(SectionType.AUDIO));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection((SectionType) null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection((SectionType) null));
 
         assertTrue(info.hasSection(SectionType.AUDIO, "Audio #1"));
         assertFalse(info.hasSection(SectionType.AUDIO, "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(SectionType.AUDIO, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasSection(SectionType.AUDIO, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(SectionType.AUDIO, null));
+        assertThrows(MediaInfoException.class, () -> info.hasSection(SectionType.AUDIO, ""));
     }
 
     @Test
@@ -371,31 +372,31 @@ public class MediaInfoParserTest {
         MediaInfo info = getMediaInfoFromText();
         assertTrue(info.hasFieldName(SectionType.AUDIO, "Audio #1", "Format"));
         assertFalse(info.hasFieldName(SectionType.AUDIO, "Audio #1", "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, null, ""));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, "", null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(SectionType.AUDIO, "", ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, null, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, "", null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(SectionType.AUDIO, "", ""));
 
         assertTrue(info.hasFieldName("Audio #1", "Format"));
         assertFalse(info.hasFieldName("Audio #1", "test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null, ""));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName("", null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName("", ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null, ""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName("", null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName("", ""));
 
         assertTrue(info.hasFieldName("Format"));
         assertFalse(info.hasFieldName("test"));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(null));
-        assertThrows(IllegalArgumentException.class, () -> info.hasFieldName(""));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(null));
+        assertThrows(MediaInfoException.class, () -> info.hasFieldName(""));
     }
 
     @Test
     @DisplayName("Test dump method and its validation")
-    void testDump() throws URISyntaxException, IOException {
+    void testPrint() throws URISyntaxException, IOException {
         MediaInfo info = getMediaInfoFromText();
-        assertThrows(IllegalArgumentException.class, () -> info.dump(null));
-        assertDoesNotThrow(() -> info.dump(new OutputStreamWriter(System.out)));
+        assertThrows(MediaInfoException.class, () -> info.print((Writer) null));
+        assertDoesNotThrow(() -> info.print(new OutputStreamWriter(System.out)));
     }
 
     @Test
@@ -410,7 +411,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_CRC32_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_CRC32_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_CRC32_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_CRC32_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_CRC32_CHECKSUM + 1));
     }
 
     @Test
@@ -425,7 +426,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_ADLER32_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_ADLER32_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_ADLER32_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_ADLER32_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_ADLER32_CHECKSUM + 1));
     }
 
     @Test
@@ -440,7 +441,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_MD5_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_MD5_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_MD5_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_MD5_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_MD5_CHECKSUM + 1));
     }
 
     @Test
@@ -455,7 +456,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_SHA1_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_SHA1_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_SHA1_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_SHA1_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_SHA1_CHECKSUM + 1));
     }
 
     @Test
@@ -470,7 +471,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_SHA256_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_SHA256_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_SHA256_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_SHA256_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_SHA256_CHECKSUM + 1));
     }
 
     @Test
@@ -485,7 +486,7 @@ public class MediaInfoParserTest {
         assertEqualsIgnoreCase(MP4_SHA512_CHECKSUM, checksum);
         assertTrue(info.verifyChecksum(MP4_SHA512_CHECKSUM));
         assertFalse(info.verifyChecksum(shuffleString(MP4_SHA512_CHECKSUM)));
-        assertThrows(IllegalArgumentException.class, () -> info.verifyChecksum(MP4_SHA512_CHECKSUM + 1));
+        assertThrows(MediaInfoException.class, () -> info.verifyChecksum(MP4_SHA512_CHECKSUM + 1));
     }
 
     private MediaInfo getMediaInfoFromFile(String resourceName) throws URISyntaxException {

@@ -7,6 +7,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.WString;
 
 import java.io.IOException;
+import java.util.Set;
 
 /*
  * Copyright (C) 2025 oppahansi
@@ -38,6 +39,38 @@ import java.io.IOException;
  * access to its functions.
  */
 public interface MediaInfoLib extends Library {
+    Set<String> SUPPORTED_EXTENSIONS = Set.of(
+        "mkv", "mka", "mks", // Matroska
+        "ogg", "ogm", // Ogg
+        "avi", "wav", // Riff
+        "mpeg", "mpg", "vob", // Mpeg 1&2 container
+        "mp4", // Mpeg 4 container
+        "mpgv", "mpv", "m1v", "m2v", // Mpeg video specific
+        "mp2", "mp3", // Mpeg audio specific
+        "asf", "wma", "wmv", // Windows Media
+        "qt", "mov", // Quicktime
+        "rm", "rmvb", "ra", // Real
+        "ifo", // DVD-Video
+        "ac3", // AC3
+        "dts", // DTS
+        "aac", // AAC
+        "ape", "mac", // Monkey's Audio
+        "flac", // Flac
+        "dat", // CDXA, like Video-CD
+        "aiff", "aifc", // Apple/SGI
+        "au", // Sun/NeXT
+        "iff", // Amiga IFF/SVX8/SV16
+        "paf", // Ensoniq PARIS
+        "sd2", // Sound Designer 2
+        "irca", // Berkeley/IRCAM/CARL
+        "w64", // SoundFoundry WAVE 64
+        "mat", // Matlab
+        "pvf", // Portable Voice format
+        "xi", // FastTracker2 Extended
+        "sds", // Midi Sample dump Format
+        "avr" // Audio Visual Research
+    );
+
     /**
      * Loads the MediaInfo library.
      * <p>
@@ -126,5 +159,4 @@ public interface MediaInfoLib extends Library {
      * @return A WString containing the metadata information.
      */
     WString MediaInfo_Inform(Pointer handle);
-
 }
