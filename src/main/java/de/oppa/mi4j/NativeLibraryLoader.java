@@ -7,9 +7,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class NativeLibraryLoader {
-
-    public static void loadMediaInfoLibrary() throws IOException {
+class NativeLibraryLoader {
+    static void loadMediaInfoLibrary() throws IOException {
         String os = System.getProperty("os.name").toLowerCase();
         String arch = System.getProperty("os.arch").toLowerCase();
 
@@ -24,7 +23,6 @@ public class NativeLibraryLoader {
             throw new UnsupportedOperationException("Unsupported OS: " + os);
         }
 
-        // Extract the library from resources
         Path tempDir;
         Path libPath;
 
@@ -48,7 +46,6 @@ public class NativeLibraryLoader {
 
         libPath.toFile().deleteOnExit();
 
-        // Set jna.library.path so JNA can find the library
         System.setProperty("jna.library.path", tempDir.toString());
     }
 }
