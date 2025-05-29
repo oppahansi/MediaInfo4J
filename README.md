@@ -22,7 +22,7 @@ MediaInfoParser parser = new MediaInfoParser()
 MediaInfo mediaInfo = parser.parseFile(filePath);
 
 // Print all sections and their fields
-mediaInfo.dump();
+mediaInfo.print();
 ```
 
 ### From a string
@@ -31,7 +31,7 @@ MediaInfoParser parser = new MediaInfoParser()
 MediaInfo mediaInfo = parser.parseData(dataString);
 
 // Print all sections and their fields
-mediaInfo.dump();
+mediaInfo.print();
 ```
 
 ## Features
