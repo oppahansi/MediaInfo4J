@@ -70,9 +70,6 @@ mediaInfo.print();
 - - `ChapterName x` (ChapterName 1 -> : en:Time for Ignition...)
 - - `ChapterTimestamp x` (ChapterTimestamp 1 -> 00:00:00.000...)
 
-## TODO
-- [ ] Publish on maven central
-
 
 ## Acknowledgments
 This project was inspired by and partially derived from the [vlcj-info](https://github.com/caprica/vlcj-info) library.  
