@@ -15,7 +15,24 @@
 A Java library for parsing media information using the [MediaInfo](https://mediaarea.net/en/MediaInfo) library.  
 This library provides a simple interface to extract metadata from media files.  
 
-## Example Usage
+## Installing
+
+### Gradle
+```groovy
+implementation group: 'io.github.oppahansi', name: 'MediaInfo4J', version: '0.2.0'
+```
+
+### Maven
+```xml
+<dependency>
+    <groupId>io.github.oppahansi</groupId>
+    <artifactId>MediaInfo4J</artifactId>
+    <version>0.2.0</version>
+</dependency>
+```
+
+## Usage
+
 ### From a file path
 ```java
 MediaInfoParser parser = new MediaInfoParser()
