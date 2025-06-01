@@ -1,13 +1,16 @@
 plugins {
     id 'java-library'
+    id 'signing'
+    id 'net.thebugmc.gradle.sonatype-central-portal-publisher' version '1.2.4'
 }
 
-group = 'de.oppa.mi4j'
-version = '0.1.1-SNAPSHOT'
+group = 'io.github.oppahansi'
+version = '0.2.0'
 description = 'A simple Java library for reading MediaInfo from media files.'
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 java {
@@ -25,4 +28,35 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+centralPortal {
+    pom {
+        // Please define according to Sonatype official requirements
+        name = 'MediaInfo4J'
+        description = 'A simple Java library for reading MediaInfo from media files.'
+        url = 'https://github.com/oppahansi/MediaInfo4J'
+        licenses {
+            license {
+                name = 'GPL-3.0'
+                url = 'https://www.gnu.org/licenses/gpl-3.0.html'
+            }
+        }
+        developers {
+            developer {
+                id = 'oppahansi'
+                name = 'Alex'
+                email = 'oppahansi@protonmail.com'
+            }
+        }
+        scm {
+            connection = 'scm:git:git://github.com/oppahansi/MediaInfo4J.git'
+            developerConnection = 'scm:git:ssh://github.com/oppahansi/MediaInfo4J.git'
+            url = 'https://github.com/oppahansi/MediaInfo4J'
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
 }
