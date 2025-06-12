@@ -27,7 +27,7 @@ implementation group: 'io.github.oppahansi', name: 'MediaInfo4J', version: '0.2.
 <dependency>
     <groupId>io.github.oppahansi</groupId>
     <artifactId>MediaInfo4J</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 </dependency>
 ```
 
