@@ -19,7 +19,7 @@ This library provides a simple interface to extract metadata from media files.
 
 ### Gradle
 ```groovy
-implementation group: 'io.github.oppahansi', name: 'MediaInfo4J', version: '0.2.0'
+implementation group: 'io.github.oppahansi', name: 'MediaInfo4J', version: '0.2.1'
 ```
 
 ### Maven
