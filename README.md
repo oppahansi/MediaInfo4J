@@ -41,11 +41,26 @@ MediaInfo mediaInfo = parser.parseFile(filePath);
 // Print all sections and their fields
 mediaInfo.print();
 ```
+or
+```java
+MediaInfo mediaInfo = MediaInfo.fromFile(filePath);
+
+// Print all sections and their fields
+mediaInfo.print();
+```
+
 
 ### From a string
 ```java
 MediaInfoParser parser = new MediaInfoParser()
 MediaInfo mediaInfo = parser.parseData(dataString);
+
+// Print all sections and their fields
+mediaInfo.print();
+```
+or
+```java
+MediaInfo mediaInfo = MediaInfo.fromData(dataString);
 
 // Print all sections and their fields
 mediaInfo.print();

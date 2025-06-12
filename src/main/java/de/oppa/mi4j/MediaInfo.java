@@ -89,6 +89,38 @@ public final class MediaInfo {
     }
 
     /**
+     * Create a MediaInfo instance from a file or raw data.
+     *
+     * @param filePath the file path to extract media information from
+     * @return parsed media information
+     * @throws MediaInfoException if parsing fails
+     */
+    public static MediaInfo fromFile(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new MediaInfoException("File path cannot be null or empty");
+        }
+
+        MediaInfoParser parser = new MediaInfoParser();
+        return parser.parseFile(filePath);
+    }
+
+    /**
+     * Create a MediaInfo instance from raw data.
+     *
+     * @param data raw data to parse
+     * @return parsed media information
+     * @throws MediaInfoException if parsing fails
+     */
+    public static MediaInfo fromData(String data) {
+        if (data == null || data.isEmpty()) {
+            throw new MediaInfoException("Data cannot be null or empty");
+        }
+
+        MediaInfoParser parser = new MediaInfoParser();
+        return parser.parseData(data);
+    }
+
+    /**
      * Get or create a section for the given type.
      *
      * @param type section type
@@ -441,34 +473,6 @@ public final class MediaInfo {
         }
     }
 
-    /**
-     * Print the sections in a human-readable format.
-     *
-     * @param printer    the PrintWriter to print to
-     * @param sections   the sections to print
-     * @param fullFormat if true, prints all fields in full format; otherwise, prints summary
-     */
-    private void printSections(PrintWriter printer, Map<SectionType, Map<String, Section>> sections, boolean fullFormat) {
-        for (Map.Entry<SectionType, Map<String, Section>> entry : sections.entrySet()) {
-            SectionType sectionType = entry.getKey();
-            Map<String, Section> sectionMap = entry.getValue();
-            if (sectionMap.isEmpty()) {
-                printer.printf("Section Type: %s%n  No sections available.%n", sectionType.getName());
-                continue;
-            }
-
-            printer.printf("Section Type: %s%n", sectionType.getName());
-            for (Section section : sectionMap.values()) {
-                section.print(printer);
-                if (!fullFormat) {
-                    printer.printf("    Fields: %d%n%n", section.getFieldNames().size());
-                }
-            }
-
-            printer.println();
-        }
-    }
-
     @Override
     public String toString() {
         return "%s[sectionsByType=%s]".formatted(getClass().getSimpleName(), typeToNameToSection);
@@ -542,6 +546,34 @@ public final class MediaInfo {
         }
 
         return false;
+    }
+
+    /**
+     * Print the sections in a human-readable format.
+     *
+     * @param printer    the PrintWriter to print to
+     * @param sections   the sections to print
+     * @param fullFormat if true, prints all fields in full format; otherwise, prints summary
+     */
+    private void printSections(PrintWriter printer, Map<SectionType, Map<String, Section>> sections, boolean fullFormat) {
+        for (Map.Entry<SectionType, Map<String, Section>> entry : sections.entrySet()) {
+            SectionType sectionType = entry.getKey();
+            Map<String, Section> sectionMap = entry.getValue();
+            if (sectionMap.isEmpty()) {
+                printer.printf("Section Type: %s%n  No sections available.%n", sectionType.getName());
+                continue;
+            }
+
+            printer.printf("Section Type: %s%n", sectionType.getName());
+            for (Section section : sectionMap.values()) {
+                section.print(printer);
+                if (!fullFormat) {
+                    printer.printf("    Fields: %d%n%n", section.getFieldNames().size());
+                }
+            }
+
+            printer.println();
+        }
     }
 
     /**
